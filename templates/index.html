@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain Tumor Detection</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f2f9fc;
+            color: #333;
+        }
+        h1 {
+            color: #004085;
+            margin-bottom: 30px;
+        }
+        #result {
+            border: 1px solid #004085;
+            border-radius: .375rem;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            transition: background-color 0.3s;
+        }
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+        .table {
+            margin-top: 20px;
+        }
+        .highlighted-image {
+            margin-top: 10px;
+            border: 2px solid #004085;
+            border-radius: .375rem;
+        }
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #666;
+        }
+        .info-card {
+            background-color: #e7f3fe;
+            border-left: 6px solid #004085;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center my-4">Brain Tumor Detection</h1>
+        <div class="info-card">
+            <p><i class="fas fa-info-circle"></i> Upload an MRI image to detect brain tumors with our advanced AI model.</p>
+        </div>
+        
+        <div class="form-group">
+            <label for="imageInput">Upload Image:</label>
+            <input type="file" class="form-control-file" id="imageInput" accept="image/*" />
+        </div>
+        <button class="btn btn-custom btn-lg" id="uploadButton"><i class="fas fa-upload"></i> Upload Image</button>
+        
+        <div id="result" class="mt-4">
+            <h2>Predictions:</h2>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Label</th>
+                        <th>Confidence</th>
+                    </tr>
+                </thead>
+                <tbody id="predictionsTableBody">
+                    <!-- Predictions will be populated here -->
+                </tbody>
+            </table>
+            <h2>Highlighted Image:</h2>
+            <img id="highlightedImage" class="highlighted-image" src="" alt="Highlighted Image" />
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Brain Health Institute | <a href="#" class="text-primary">Privacy Policy</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('uploadButton').onclick = async function() {
+            const fileInput = document.getElementById('imageInput');
+            const file = fileInput.files[0];
+            if (!file) {
+                alert("Please select an image file.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            try {
+                const response = await fetch("http://127.0.0.1:8000/predict/", {
+                    method: "POST",
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+
+                const data = await response.json();
+                const predictionsTableBody = document.getElementById('predictionsTableBody');
+                predictionsTableBody.innerHTML = ''; // Clear previous results
+
+                // Populate predictions table
+                data.predictions.forEach(prediction => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td>${prediction.label}</td><td>${(prediction.confidence * 100).toFixed(2)}%</td>`;
+                    predictionsTableBody.appendChild(row);
+                });
+
+                document.getElementById('highlightedImage').src = "data:image/png;base64," + data.highlighted_image;
+
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred while uploading the image.");
+            }
+        };
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
