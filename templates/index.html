@@ -3,134 +3,1009 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brain Tumor Detection</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>NeuroVision AI | Advanced Brain Analysis</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-light: #6366F1;
+            --primary-dark: #4338CA;
+            --secondary: #10B981;
+            --danger: #EF4444;
+            --light: #F9FAFB;
+            --dark: #111827;
+            --gray: #6B7280;
+            --light-gray: #E5E7EB;
+        }
+        
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f2f9fc;
-            color: #333;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #F9FAFB;
+            color: var(--dark);
+            line-height: 1.6;
         }
-        h1 {
-            color: #004085;
-            margin-bottom: 30px;
+        
+        .navbar {
+            background-color: white;
+            box-shadow: 0 1px 15px rgba(0, 0, 0, 0.05);
         }
-        #result {
-            border: 1px solid #004085;
-            border-radius: .375rem;
-            padding: 20px;
-            background-color: #ffffff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.5rem;
         }
-        .btn-custom {
-            background-color: #007bff;
-            color: white;
+        
+        .hero-section {
+            background: linear-gradient(135deg, #F9FAFB 0%, #F0F4FF 100%);
+            padding: 5rem 0;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: "";
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(79, 70, 229, 0.1) 0%, rgba(79, 70, 229, 0) 70%);
+            border-radius: 50%;
+        }
+        
+        .hero-section::after {
+            content: "";
+            position: absolute;
+            bottom: -100px;
+            left: -100px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0) 70%);
+            border-radius: 50%;
+        }
+        
+        h1, h2, h3, h4, h5 {
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .card {
             border: none;
-            transition: background-color 0.3s;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            background-color: white;
         }
-        .btn-custom:hover {
-            background-color: #0056b3;
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
         }
-        .table {
-            margin-top: 20px;
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid var(--light-gray);
+            font-weight: 600;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        .highlighted-image {
-            margin-top: 10px;
-            border: 2px solid #004085;
-            border-radius: .375rem;
+        
+        .btn-primary {
+            background-color: var(--primary);
+            border: none;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
         }
-        .footer {
-            margin-top: 30px;
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+        }
+        
+        .upload-area {
+            border: 2px dashed var(--light-gray);
+            border-radius: 16px;
+            padding: 3rem 2rem;
             text-align: center;
-            color: #666;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
         }
-        .info-card {
-            background-color: #e7f3fe;
-            border-left: 6px solid #004085;
-            padding: 15px;
-            margin-bottom: 20px;
+        
+        .upload-area:hover {
+            border-color: var(--primary-light);
+            background-color: rgba(79, 70, 229, 0.02);
+        }
+        
+        .upload-area.active {
+            border-color: var(--primary);
+            background-color: rgba(79, 70, 229, 0.03);
+        }
+        
+        .upload-icon {
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-area:hover .upload-icon {
+            transform: translateY(-5px);
+        }
+        
+        .result-image {
+            border-radius: 12px;
+            max-width: 100%;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .result-image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .confidence-bar {
+            height: 8px;
+            border-radius: 4px;
+            background-color: var(--light-gray);
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .confidence-level {
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            transition: width 0.5s ease;
+        }
+        
+        .info-chip {
+            background-color: rgba(79, 70, 229, 0.1);
+            color: var(--primary);
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .info-chip i {
+            margin-right: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .footer {
+            background-color: white;
+            padding: 4rem 0 2rem;
+            margin-top: 4rem;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .loading-spinner {
+            display: none;
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 0.25em solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 0.5rem;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .progress-container {
+            display: none;
+            margin-top: 1.5rem;
+            background-color: var(--light-gray);
+            border-radius: 8px;
+            overflow: hidden;
+            height: 8px;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            transition: width 0.3s ease;
+        }
+        
+        .prediction-badge {
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+        
+        .prediction-positive {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        
+        .prediction-negative {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--secondary);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            background-color: rgba(79, 70, 229, 0.1);
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+        
+        .tech-logo {
+            height: 40px;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+        
+        .tech-logo:hover {
+            opacity: 1;
+            transform: translateY(-3px);
+        }
+        
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+            top: -100px;
+            right: -100px;
+        }
+        
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, var(--secondary) 0%, transparent 70%);
+            bottom: -50px;
+            left: -50px;
+        }
+        
+        .mri-visual {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            transform: perspective(1000px) rotateY(-5deg) rotateX(5deg);
+            transition: all 0.5s ease;
+            border: 8px solid white;
+        }
+        
+        .mri-visual:hover {
+            transform: perspective(1000px) rotateY(0) rotateX(0);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            color: var(--dark);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary);
+            background-color: rgba(79, 70, 229, 0.05);
+        }
+        
+        .nav-link.active {
+            color: var(--primary);
+            background-color: rgba(79, 70, 229, 0.1);
+        }
+        
+        .section-title {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+        
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 50px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 2px;
+        }
+        
+        .blob {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(180deg, rgba(79, 70, 229, 0.1) 0%, rgba(79, 70, 229, 0) 100%);
+            border-radius: 50%;
+            filter: blur(30px);
+            z-index: -1;
+        }
+        
+        .blob-1 {
+            top: 20%;
+            left: -10%;
+        }
+        
+        .blob-2 {
+            bottom: 10%;
+            right: -10%;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="text-center my-4">Brain Tumor Detection</h1>
-        <div class="info-card">
-            <p><i class="fas fa-info-circle"></i> Upload an MRI image to detect brain tumors with our advanced AI model.</p>
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-brain me-2"></i>NeuroVision<span class="gradient-text">AI</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#technology">Technology</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                </ul>
+                <a href="#upload" class="btn btn-primary ms-3">
+                    <i class="fas fa-rocket me-1"></i> Try Now
+                </a>
+            </div>
         </div>
-        
-        <div class="form-group">
-            <label for="imageInput">Upload Image:</label>
-            <input type="file" class="form-control-file" id="imageInput" accept="image/*" />
-        </div>
-        <button class="btn btn-custom btn-lg" id="uploadButton"><i class="fas fa-upload"></i> Upload Image</button>
-        
-        <div id="result" class="mt-4">
-            <h2>Predictions:</h2>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Label</th>
-                        <th>Confidence</th>
-                    </tr>
-                </thead>
-                <tbody id="predictionsTableBody">
-                    <!-- Predictions will be populated here -->
-                </tbody>
-            </table>
-            <h2>Highlighted Image:</h2>
-            <img id="highlightedImage" class="highlighted-image" src="" alt="Highlighted Image" />
-        </div>
+    </nav>
 
-        <div class="footer">
-            <p>&copy; 2024 Brain Health Institute | <a href="#" class="text-primary">Privacy Policy</a></p>
+    <div class="hero-section">
+        <div class="container position-relative">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <span class="info-chip mb-4">
+                        <i class="fas fa-bolt"></i> AI-Powered Diagnostics
+                    </span>
+                    <h1 class="display-4 fw-bold mb-4">Precision Brain Tumor Detection in Seconds</h1>
+                    <p class="lead text-muted mb-4">
+                        Our advanced deep learning model analyzes MRI scans with 98.7% accuracy to detect abnormalities and potential tumors.
+                    </p>
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="d-flex me-4">
+                            <img src="../images/doctor_1.jpeg" alt="Doctor" class="rounded-circle border border-3 border-white" width="40" height="40">
+                            <img src="../images/doctor_2.jpeg" alt="Doctor" class="rounded-circle border border-3 border-white" width="40" height="40" style="margin-left: -15px;">
+                            <img src="../images/doctor_3.jpeg" alt="Doctor" class="rounded-circle border border-3 border-white" width="40" height="40" style="margin-left: -15px;">
+                        </div>
+                        <div>
+                            <p class="mb-0 small fw-bold">Trusted by 500+ neurologists worldwide</p>
+                            <div class="d-flex text-warning">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="text-dark ms-1 small">4.9/5</span>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#upload" class="btn btn-primary btn-lg px-4 py-3 me-3">
+                        <i class="fas fa-upload me-2"></i> Upload MRI Scan
+                    </a>
+                    <a href="#features" class="btn btn-outline-primary btn-lg px-4 py-3">
+                        <i class="fas fa-play-circle me-2"></i> How It Works
+                    </a>
+                </div>
+                <div class="col-lg-6 position-relative">
+                    <div class="mri-visual">
+                        <img src="../images/frontend_image.jpeg" alt="MRI Scan Analysis" class="img-fluid">
+                    </div>
+                    <div class="position-absolute bg-white p-3 rounded-3 shadow-sm" style="bottom: -20px; right: 20px; width: 200px;">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary bg-opacity-10 p-2 rounded-2 me-2">
+                                <i class="fas fa-check-circle text-primary"></i>
+                            </div>
+                            <div>
+                                <p class="mb-0 small fw-bold">Tumor Detected</p>
+                                <p class="mb-0 text-muted small">92.4% Confidence</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
+    <div class="container mb-5 position-relative" id="features">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8 text-center">
+                <h2 class="section-title">Why Choose NeuroVision AI?</h2>
+                <p class="text-muted">Our platform combines cutting-edge artificial intelligence with medical expertise to deliver fast, accurate results.</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0">
+                    <div class="card-body p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h5 class="mb-3">Advanced AI Analysis</h5>
+                        <p class="text-muted">Our deep neural network has been trained on over 50,000 MRI scans to detect even the smallest abnormalities.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0">
+                    <div class="card-body p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h5 class="mb-3">Instant Results</h5>
+                        <p class="text-muted">Get detailed analysis in under 30 seconds, allowing for quicker decision-making in critical situations.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0">
+                    <div class="card-body p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h5 class="mb-3">Secure & Private</h5>
+                        <p class="text-muted">All data is encrypted and HIPAA compliant. Your patient's privacy is our top priority.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container my-5 py-5" id="upload">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-upload me-2"></i>Upload MRI Scan</h5>
+                        <span class="badge bg-primary bg-opacity-10 text-primary">Step 1 of 2</span>
+                    </div>
+                    <div class="card-body p-5">
+                        <div id="uploadArea" class="upload-area">
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <h4 class="mb-2">Drag & Drop your MRI scan here</h4>
+                            <p class="text-muted mb-3">or click to browse files on your computer</p>
+                            <small class="text-muted">Supports: JPG, PNG, DICOM (Max 15MB)</small>
+                            <input type="file" class="d-none" id="imageInput" accept="image/*,.dcm" />
+                        </div>
+                        <div class="progress-container mt-4" id="progressContainer">
+                            <div class="d-flex justify-content-between mb-2">
+                                <small class="text-muted">Uploading...</small>
+                                <small class="text-muted fw-bold" id="uploadProgressText">0%</small>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div id="uploadProgress" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-4">
+                            <button class="btn btn-outline-secondary px-4 py-2" id="cancelUpload" disabled>
+                                <i class="fas fa-times me-1"></i> Cancel
+                            </button>
+                            <button class="btn btn-primary px-4 py-2" id="uploadButton" disabled>
+                                <span id="buttonText">Analyze Image</span>
+                                <span id="loadingSpinner" class="loading-spinner"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-4" id="resultCard" style="display: none;">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Analysis Results</h5>
+                        <span id="resultBadge" class="prediction-badge prediction-negative">
+                            <i class="fas fa-check-circle me-1"></i> No Tumor Detected
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-4 mb-md-0">
+                                <h6 class="mb-3 fw-bold"><i class="fas fa-image me-2"></i>Original Image</h6>
+                                <img id="originalImage" class="result-image w-100" src="" alt="Original MRI Scan" />
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="mb-3 fw-bold"><i class="fas fa-eye me-2"></i>AI Analysis Highlights</h6>
+                                <img id="highlightedImage" class="result-image w-100" src="" alt="Highlighted Areas" />
+                                <div class="alert alert-primary mt-3 mb-0">
+                                    <i class="fas fa-info-circle me-2"></i> Highlighted areas indicate regions of interest detected by our AI model.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h6 class="mt-5 mb-3 fw-bold"><i class="fas fa-list-ul me-2"></i>Detailed Predictions</h6>
+                        <div class="table-responsive">
+                            <table class="table table-borderless">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th>Condition</th>
+                                        <th>Confidence Level</th>
+                                        <th>Risk Assessment</th>
+                                        <th>Recommendation</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="predictionsTableBody">
+                                    <!-- Predictions will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="alert alert-light mt-4">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0 text-primary">
+                                    <i class="fas fa-exclamation-triangle fa-2x"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="alert-heading">Important Note</h6>
+                                    <p class="mb-0">This analysis is provided for informational purposes only and should not replace professional medical advice, diagnosis, or treatment. Always consult with a qualified healthcare provider for interpretation of medical images.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <button class="btn btn-outline-primary" id="downloadReport">
+                                <i class="fas fa-download me-1"></i> Download Full Report
+                            </button>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-user-md me-1"></i> Consult Specialist
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-light py-5 my-5" id="technology">
+        <div class="container">
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-8 text-center">
+                    <h2 class="section-title">Powered by Cutting-Edge Technology</h2>
+                    <p class="text-muted">Our platform leverages the latest advancements in AI and medical imaging</p>
+                </div>
+            </div>
+            <div class="row g-4 justify-content-center">
+                <div class="col-auto text-center">
+                    <img src="../images/tensorflow.jpeg" alt="TensorFlow" class="tech-logo">
+                    <p class="mt-2 small fw-bold">TensorFlow</p>
+                </div>
+                <div class="col-auto text-center">
+                    <img src="../images/pytorch.png" alt="PyTorch" class="tech-logo">
+                    <p class="mt-2 small fw-bold">PyTorch</p>
+                </div>
+                <div class="col-auto text-center">
+                    <img src="../images/DICOM.jpeg" alt="DICOM" class="tech-logo">
+                    <p class="mt-2 small fw-bold">DICOM</p>
+                </div>
+                <div class="col-auto text-center">
+                    <img src="../images/opencv.png" alt="OpenCV" class="tech-logo">
+                    <p class="mt-2 small fw-bold">OpenCV</p>
+                </div>
+                <div class="col-auto text-center">
+                    <img src="../images/NIFTI.png" alt="NIfTI" class="tech-logo">
+                    <p class="mt-2 small fw-bold">NIfTI</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer" id="contact">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <h5 class="mb-3"><i class="fas fa-brain me-2"></i>NeuroVision<span class="gradient-text">AI</span></h5>
+                    <p class="text-muted mt-3">
+                        Advanced AI-powered medical imaging analysis for faster, more accurate diagnoses.
+                    </p>
+                    <div class="d-flex mt-4">
+                        <a href="#" class="text-muted me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="text-muted me-3"><i class="fab fa-linkedin-in fa-lg"></i></a>
+                        <a href="#" class="text-muted me-3"><i class="fab fa-github fa-lg"></i></a>
+                        <a href="#" class="text-muted"><i class="fab fa-facebook-f fa-lg"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4 mb-md-0">
+                    <h5 class="mb-3">Product</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-muted">Features</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted">Pricing</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted">API</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted">Integrations</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4 mb-md-0">
+                    <h5 class="mb-3">Resources</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-muted">Documentation</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted">Case Studies</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted">Research</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <h5 class="mb-3">Contact Us</h5>
+                    <ul class="list-unstyled text-muted">
+                        <li class="mb-3"><i class="fas fa-envelope me-2"></i> support@neurovision.ai</li>
+                        <li class="mb-3"><i class="fas fa-phone me-2"></i> (800) 555-0199</li>
+                        <li class="mb-3"><i class="fas fa-map-marker-alt me-2"></i> 123 Medical Drive, Boston, MA</li>
+                    </ul>
+                    <div class="input-group mb-3">
+                        <input type="email" class="form-control" placeholder="Your email">
+                        <button class="btn btn-primary" type="button">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <small class="text-muted">&copy; 2024 NeuroVision AI. All rights reserved.</small>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <small class="text-muted me-3"><a href="#" class="text-muted">Privacy Policy</a></small>
+                    <small class="text-muted me-3"><a href="#" class="text-muted">Terms of Service</a></small>
+                    <small class="text-muted"><a href="#" class="text-muted">HIPAA Compliance</a></small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.getElementById('uploadButton').onclick = async function() {
-            const fileInput = document.getElementById('imageInput');
-            const file = fileInput.files[0];
-            if (!file) {
-                alert("Please select an image file.");
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append("file", file);
-
-            try {
-                const response = await fetch("http://127.0.0.1:8000/predict/", {
-                    method: "POST",
-                    body: formData,
-                });
-
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.getElementById('uploadArea');
+            const imageInput = document.getElementById('imageInput');
+            const uploadButton = document.getElementById('uploadButton');
+            const cancelUpload = document.getElementById('cancelUpload');
+            const progressContainer = document.getElementById('progressContainer');
+            const uploadProgress = document.getElementById('uploadProgress');
+            const uploadProgressText = document.getElementById('uploadProgressText');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const buttonText = document.getElementById('buttonText');
+            const resultCard = document.getElementById('resultCard');
+            const originalImage = document.getElementById('originalImage');
+            const highlightedImage = document.getElementById('highlightedImage');
+            const predictionsTableBody = document.getElementById('predictionsTableBody');
+            const resultBadge = document.getElementById('resultBadge');
+            const downloadReportButton = document.getElementById('downloadReport');
+            
+            let uploadController = null;
+            
+            // Upload area click handler
+            uploadArea.addEventListener('click', function() {
+                imageInput.click();
+            });
+            
+            // Drag and drop functionality
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadArea.classList.add('active');
+            });
+            
+            uploadArea.addEventListener('dragleave', function() {
+                uploadArea.classList.remove('active');
+            });
+            
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('active');
+                
+                if (e.dataTransfer.files.length) {
+                    imageInput.files = e.dataTransfer.files;
+                    handleFileSelection();
                 }
-
-                const data = await response.json();
-                const predictionsTableBody = document.getElementById('predictionsTableBody');
-                predictionsTableBody.innerHTML = ''; // Clear previous results
-
+            });
+            
+            // File input change handler
+            imageInput.addEventListener('change', handleFileSelection);
+            
+            function handleFileSelection() {
+                if (imageInput.files && imageInput.files[0]) {
+                    const file = imageInput.files[0];
+                    const fileSize = file.size / 1024 / 1024; // in MB
+                    
+                    if (fileSize > 15) {
+                        alert('File size exceeds 15MB limit. Please choose a smaller file.');
+                        return;
+                    }
+                    
+                    // Display file name
+                    uploadArea.innerHTML = `
+                        <div class="upload-icon text-success">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h5 class="mb-1">${file.name}</h5>
+                        <p class="text-muted small mb-2">${(fileSize).toFixed(2)} MB</p>
+                        <span class="badge bg-primary bg-opacity-10 text-primary">Ready to analyze</span>
+                    `;
+                    
+                    uploadButton.disabled = false;
+                    
+                    // Preview original image
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        originalImage.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+            
+            // Upload button click handler
+            uploadButton.addEventListener('click', async function() {
+                const file = imageInput.files[0];
+                if (!file) return;
+                
+                // Show loading state
+                uploadButton.disabled = true;
+                buttonText.textContent = 'Analyzing...';
+                loadingSpinner.style.display = 'inline-block';
+                progressContainer.style.display = 'block';
+                cancelUpload.disabled = false;
+                
+                const formData = new FormData();
+                formData.append("file", file);
+                
+                // Create AbortController for the fetch request
+                uploadController = new AbortController();
+                
+                try {
+                    // Simulate upload progress (in a real app, you'd use XMLHttpRequest for progress tracking)
+                    let progress = 0;
+                    const progressInterval = setInterval(() => {
+                        progress += Math.random() * 10;
+                        if (progress > 90) progress = 90;
+                        uploadProgress.style.width = `${progress}%`;
+                        uploadProgressText.textContent = `${Math.floor(progress)}%`;
+                    }, 300);
+                    
+                    // --- REAL API CALL ---
+                    const response = await fetch("http://127.0.0.1:8000/predict/", {
+                        method: "POST",
+                        body: formData,
+                        signal: uploadController.signal,
+                    });
+                    
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error("Backend error:", errorText);
+                        alert("Backend error: " + errorText);
+                        throw new Error("Network response was not ok");
+                    }
+                    
+                    const data = await response.json();
+                    // --- END REAL API CALL ---
+                    
+                    // Clear progress simulation
+                    clearInterval(progressInterval);
+                    uploadProgress.style.width = '100%';
+                    uploadProgressText.textContent = '100%';
+                    
+                    displayResults(data);
+                    
+                } catch (error) {
+                    if (error.name === 'AbortError') {
+                        console.log('Upload cancelled');
+                    } else {
+                        console.error("Error:", error);
+                        alert("An error occurred while uploading the image.");
+                    }
+                } finally {
+                    resetUploadUI();
+                }
+            });
+            
+            // Cancel upload handler
+            cancelUpload.addEventListener('click', function() {
+                if (uploadController) {
+                    uploadController.abort();
+                }
+                resetUploadUI();
+            });
+            
+            function displayResults(data) {
+                window.lastPredictionsData = data; // Store latest results globally
                 // Populate predictions table
+                predictionsTableBody.innerHTML = '';
+                
+                let hasTumor = false;
+                let highestConfidence = 0;
+                let mainCondition = "";
+                
                 data.predictions.forEach(prediction => {
+                    const confidencePercent = (prediction.confidence * 100).toFixed(1);
+                    const confidenceWidth = Math.min(100, Math.max(5, confidencePercent));
+                    
+                    if (prediction.confidence > highestConfidence) {
+                        highestConfidence = prediction.confidence;
+                        mainCondition = prediction.tumor_type;
+                    }
+                    
+                    // Check if any tumor was detected with confidence > 50%
+                    if (prediction.tumor_type.toLowerCase().includes('tumor') && prediction.confidence > 0.5) {
+                        hasTumor = true;
+                    }
+                    
                     const row = document.createElement('tr');
-                    row.innerHTML = `<td>${prediction.label}</td><td>${(prediction.confidence * 100).toFixed(2)}%</td>`;
+                    row.innerHTML = `
+                        <td>${prediction.tumor_type}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="me-2">${confidencePercent}%</div>
+                                <div class="confidence-bar flex-grow-1">
+                                    <div class="confidence-level" style="width: ${confidenceWidth}%"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            ${prediction.confidence > 0.7 ? 
+                              '<span class="badge bg-danger bg-opacity-10 text-danger">High Risk</span>' : 
+                              prediction.confidence > 0.4 ? 
+                              '<span class="badge bg-warning bg-opacity-10 text-warning">Medium Risk</span>' : 
+                              '<span class="badge bg-success bg-opacity-10 text-success">Low Risk</span>'}
+                        </td>
+                        <td>
+                            ${prediction.confidence > 0.7 ? 
+                              '<span class="badge bg-danger bg-opacity-10 text-danger">Urgent Review</span>' : 
+                              prediction.confidence > 0.4 ? 
+                              '<span class="badge bg-warning bg-opacity-10 text-warning">Follow-up</span>' : 
+                              '<span class="badge bg-success bg-opacity-10 text-success">Monitor</span>'}
+                        </td>
+                    `;
                     predictionsTableBody.appendChild(row);
                 });
-
-                document.getElementById('highlightedImage').src = "data:image/png;base64," + data.highlighted_image;
-
-            } catch (error) {
-                console.error("Error:", error);
-                alert("An error occurred while uploading the image.");
+                
+                // Update result badge
+                if (hasTumor) {
+                    resultBadge.className = 'prediction-badge prediction-positive';
+                    resultBadge.innerHTML = `<i class="fas fa-exclamation-triangle me-1"></i> ${mainCondition} Detected`;
+                } else {
+                    resultBadge.className = 'prediction-badge prediction-negative';
+                    resultBadge.innerHTML = '<i class="fas fa-check-circle me-1"></i> No Tumor Detected';
+                }
+                
+                // Display highlighted image
+                highlightedImage.src = "data:image/png;base64," + data.highlighted_image;
+                
+                // Show results card with animation
+                resultCard.style.display = 'block';
+                resultCard.style.opacity = 0;
+                resultCard.style.transform = 'translateY(20px)';
+                resultCard.style.transition = 'all 0.5s ease';
+                
+                setTimeout(() => {
+                    resultCard.style.opacity = 1;
+                    resultCard.style.transform = 'translateY(0)';
+                }, 100);
+                
+                // Scroll to results
+                setTimeout(() => {
+                    resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 600);
             }
-        };
+            
+            function resetUploadUI() {
+                uploadButton.disabled = false;
+                buttonText.textContent = 'Analyze Image';
+                loadingSpinner.style.display = 'none';
+                progressContainer.style.display = 'none';
+                uploadProgress.style.width = '0%';
+                uploadProgressText.textContent = '0%';
+                cancelUpload.disabled = true;
+                uploadController = null;
+                
+                // Reset upload area if cancelled
+                if (uploadController) {
+                    uploadArea.innerHTML = `
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <h4 class="mb-2">Drag & Drop your MRI scan here</h4>
+                        <p class="text-muted mb-3">or click to browse files on your computer</p>
+                        <small class="text-muted">Supports: JPG, PNG, DICOM (Max 15MB)</small>
+                    `;
+                }
+            }
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // Download report button handler
+            downloadReportButton.addEventListener('click', function() {
+                // Get the predictions from the last analysis
+                if (!window.lastPredictionsData) {
+                    alert("No analysis results to download.");
+                    return;
+                }
+                const data = window.lastPredictionsData;
+                let report = "NeuroVision AI - Brain Tumor Analysis Report\n\n";
+                report += "Predictions:\n";
+                data.predictions.forEach((prediction, idx) => {
+                    report += `#${idx + 1}\n`;
+                    report += `Tumor Type: ${prediction.tumor_type}\n`;
+                    report += `Confidence: ${(prediction.confidence * 100).toFixed(1)}%\n`;
+                    report += `Risk: ${prediction.confidence > 0.7 ? "High" : prediction.confidence > 0.4 ? "Medium" : "Low"}\n`;
+                    report += `Recommendation: ${prediction.confidence > 0.7 ? "Urgent Review" : prediction.confidence > 0.4 ? "Follow-up" : "Monitor"}\n\n`;
+                });
+                report += "Highlighted image is available in the web interface.\n";
+                report += "\n---\nThis report is for informational purposes only.\n";
+
+                // Create a blob and trigger download
+                const blob = new Blob([report], { type: "text/plain" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "Brain_Tumor_Analysis_Report.txt";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+        });
     </script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.6/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
