@@ -17,7 +17,7 @@ This project is an advanced brain tumor detection web application using deep lea
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/your-repo-name.git
+git clone https://github.com/Atasatti/BrainTumor_Detection
 cd your-repo-name
 ```
 
