@@ -853,7 +853,8 @@
             });
             
             function displayResults(data) {
-                window.lastPredictionsData = data; // Store latest results globally
+                // Store latest data globally for report download
+                window.lastPredictionsData = data;
                 // Populate predictions table
                 predictionsTableBody.innerHTML = '';
                 
@@ -932,6 +933,38 @@
                     resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 600);
             }
+
+            // Add this after your displayResults function
+            document.getElementById('downloadReport').addEventListener('click', function() {
+                // Get the predictions from the last analysis
+                if (!window.lastPredictionsData) {
+                    alert("No analysis results to download.");
+                    return;
+                }
+                const data = window.lastPredictionsData;
+                let report = "NeuroVision AI - Brain Tumor Analysis Report\n\n";
+                report += "Predictions:\n";
+                data.predictions.forEach((prediction, idx) => {
+                    report += `#${idx + 1}\n`;
+                    report += `Tumor Type: ${prediction.tumor_type}\n`;
+                    report += `Confidence: ${(prediction.confidence * 100).toFixed(1)}%\n`;
+                    report += `Risk: ${prediction.confidence > 0.7 ? "High" : prediction.confidence > 0.4 ? "Medium" : "Low"}\n`;
+                    report += `Recommendation: ${prediction.confidence > 0.7 ? "Urgent Review" : prediction.confidence > 0.4 ? "Follow-up" : "Monitor"}\n\n`;
+                });
+                report += "Highlighted image is available in the web interface.\n";
+                report += "\n---\nThis report is for informational purposes only.\n";
+
+                // Create a blob and trigger download
+                const blob = new Blob([report], { type: "text/plain" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "Brain_Tumor_Analysis_Report.txt";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
             
             function resetUploadUI() {
                 uploadButton.disabled = false;
@@ -972,38 +1005,6 @@
                         });
                     }
                 });
-            });
-
-            // Download report button handler
-            downloadReportButton.addEventListener('click', function() {
-                // Get the predictions from the last analysis
-                if (!window.lastPredictionsData) {
-                    alert("No analysis results to download.");
-                    return;
-                }
-                const data = window.lastPredictionsData;
-                let report = "NeuroVision AI - Brain Tumor Analysis Report\n\n";
-                report += "Predictions:\n";
-                data.predictions.forEach((prediction, idx) => {
-                    report += `#${idx + 1}\n`;
-                    report += `Tumor Type: ${prediction.tumor_type}\n`;
-                    report += `Confidence: ${(prediction.confidence * 100).toFixed(1)}%\n`;
-                    report += `Risk: ${prediction.confidence > 0.7 ? "High" : prediction.confidence > 0.4 ? "Medium" : "Low"}\n`;
-                    report += `Recommendation: ${prediction.confidence > 0.7 ? "Urgent Review" : prediction.confidence > 0.4 ? "Follow-up" : "Monitor"}\n\n`;
-                });
-                report += "Highlighted image is available in the web interface.\n";
-                report += "\n---\nThis report is for informational purposes only.\n";
-
-                // Create a blob and trigger download
-                const blob = new Blob([report], { type: "text/plain" });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = "Brain_Tumor_Analysis_Report.txt";
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
             });
         });
     </script>

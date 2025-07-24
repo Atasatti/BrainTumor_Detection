@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 from fastapi import FastAPI, File, UploadFile, Request
 # from fastapi import FastAPI, HTTPException, status, Depends, Request, Form
-=======
->>>>>>> aa97b82 (Initial commit: Add Brain Tumor Detection project with documentation and setup files)
 from ultralytics import YOLO
 import cv2
 import numpy as np
@@ -12,33 +9,14 @@ from fastapi.responses import JSONResponse
 import base64
 import io
 from fastapi.templating import Jinja2Templates
-<<<<<<< HEAD
-
-=======
-from fastapi import FastAPI
-from fastapi import FastAPI, File, UploadFile, Request
-from ultralytics import YOLO
-import cv2
-import numpy as np
-from io import BytesIO
-from PIL import Image
-from fastapi.responses import JSONResponse,StreamingResponse
-import io
->>>>>>> aa97b82 (Initial commit: Add Brain Tumor Detection project with documentation and setup files)
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
 
-
 from fastapi.middleware.cors import CORSMiddleware
-
-<<<<<<< HEAD
-=======
-
-from fastapi.staticfiles import StaticFiles
 
 app.mount("/images", StaticFiles(directory="images"), name="images")
 
->>>>>>> aa97b82 (Initial commit: Add Brain Tumor Detection project with documentation and setup files)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Adjust this for specific origins in production
@@ -89,35 +67,6 @@ async def index(request: Request):
 
 
 
-<<<<<<< HEAD
-=======
-# @app.post("/predict/")
-# async def predict(file: UploadFile = File(...)):
-#     image_bytes = await file.read()
-#     image = preprocess_image(image_bytes)
-    
-#     results = model.predict(source=image, imgsz=640, conf=0.5)
-#     predictions = []
-    
-#     for result in results[0].boxes:
-#         xyxy = result.xyxy.tolist()
-#         conf = result.conf.tolist()
-#         class_id = result.cls.tolist()
-        
-#         for i in range(len(xyxy)):
-#             x_min, y_min, x_max, y_max = map(int, xyxy[i])
-#             predictions.append({
-#                 'x_min': x_min,
-#                 'y_min': y_min,
-#                 'x_max': x_max,
-#                 'y_max': y_max,
-#                 'confidence': conf[i],
-#                 'tumor_type': TUMOR_TYPE_MAPPING.get(class_id[i], "Unknown")
-#             })
-    
-#     image_with_boxes = draw_boxes(image, predictions)
-
->>>>>>> aa97b82 (Initial commit: Add Brain Tumor Detection project with documentation and setup files)
 @app.post("/predict/")
 async def predict(file: UploadFile = File(...)):
     image_bytes = await file.read()
@@ -142,7 +91,6 @@ async def predict(file: UploadFile = File(...)):
                 'tumor_type': TUMOR_TYPE_MAPPING.get(class_id[i], "Unknown")
             })
     
-<<<<<<< HEAD
     image_with_boxes = draw_boxes(image, predictions)
     
     # Convert the image with boxes to base64
@@ -150,30 +98,3 @@ async def predict(file: UploadFile = File(...)):
     image_base64 = base64.b64encode(image_with_boxes_bytes).decode('utf-8')
     
     return JSONResponse(content={"predictions": predictions, "highlighted_image": image_base64})
-=======
-    # Draw boxes on the original image (not the normalized one)
-    original_image = np.array(Image.open(BytesIO(image_bytes)))
-    # Handle grayscale images
-    if len(original_image.shape) == 2 or (len(original_image.shape) == 3 and original_image.shape[2] == 1):
-        original_image = cv2.cvtColor(original_image, cv2.COLOR_GRAY2BGR)
-    else:
-        original_image = cv2.cvtColor(original_image, cv2.COLOR_RGB2BGR)
-    image_with_boxes = cv2.resize(original_image, (640, 640))
-    image_with_boxes = draw_boxes(image_with_boxes, predictions)
-    
-    # Ensure type is uint8
-    if image_with_boxes.dtype != np.uint8:
-        image_with_boxes = (image_with_boxes * 255).astype(np.uint8)
-    
-    # Convert to base64
-    _, buffer = cv2.imencode('.png', image_with_boxes)
-    image_base64 = base64.b64encode(buffer).decode('utf-8')
-    
-    print(predictions)
-    return {
-        "predictions": predictions,
-        "highlighted_image": image_base64
-    }
-    
-    
->>>>>>> aa97b82 (Initial commit: Add Brain Tumor Detection project with documentation and setup files)
